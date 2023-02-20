@@ -1,0 +1,53 @@
+---
+# tasks file for ansible-vault-keepalived
+
+- name: Install keepalived packages
+  ansible.builtin.package:
+    name: keepalived
+    state: present
+
+- name: Create keepalived user
+  ansible.builtin.user:
+    name: keepalived
+
+- name: Set ownership of keepalived directory
+  ansible.builtin.file:
+    path: /etc/keepalived
+    state: directory
+    owner: keepalived
+    group: keepalived
+    mode: '0755'
+
+- name: Set keepalived.conf
+  ansible.builtin.template:
+    src: templates/keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: keepalived
+    group: keepalived
+    mode: '0644'
+  notify: Restart keepalived
+
+- name: Create skripts directory
+  ansible.builtin.file:
+    path: /etc/keepalived/scripts
+    state: directory
+    owner: keepalived
+    group: keepalived
+    mode: '0755'
+
+- name: Copy tracking script
+  ansible.builtin.copy:
+    src: files/vault_active_node.py
+    dest: /etc/keepalived/scripts/vault_active_node.py
+    owner: keepalived
+    group: keepalived
+    mode: '0755'
+
+- name: Start keepalived service
+  ansible.builtin.service:
+    name: keepalived
+    state: started
+    enabled: true
+
+
+

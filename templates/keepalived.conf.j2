@@ -1,0 +1,37 @@
+global_defs {
+  script_user keepalived
+  enable_script_security
+}
+
+vrrp_script vault_active_node_script {
+  script       "/etc/keepalived/scripts/vault_active_node.py --timeout=1 --url='https://127.0.0.1:8200'"
+  interval 2   # Run script every 2 seconds
+  fall 1       # If script returns non-zero 2 times in succession, enter FAULT state
+  rise 3       # If script returns zero r times in succession, exit FAULT state
+  timeout 2    # Wait up to t seconds for script before assuming non-zero exit code
+  weight 10    # Reduce priority by 10 on fall
+}
+
+vrrp_instance VIP_VAULT {
+  state MASTER
+  interface {{ vault_keepalived_interface }}
+  virtual_router_id {{ vault_keepalived_router_id }}
+  priority {{ vault_keepalived_priority }}
+  advert_int {{ vault_keepalived_advert_int }}
+  authentication {
+    auth_type PASS
+    auth_pass {{ vault_keepalived_auth_pass }}
+  }
+  virtual_ipaddress {
+    {{ vault_keepalived_vip }}
+  }
+
+  unicast_peer {
+    {% for server in groups[vault_keepalived_group] | difference([inventory_hostname]) %}
+    {{ hostvars[server]['ansible_default_ipv4']['address'] }}
+    {% endfor %}
+  }
+  track_script {
+    vault_active_node_script
+  }
+}
