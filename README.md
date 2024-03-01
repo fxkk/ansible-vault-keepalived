@@ -3,6 +3,10 @@ Role Name
 
 A brief description of the role goes here.
 
+[!WARNING]  
+> Work in progress, the idea was to create a public role with the above-mentioned title.
+But I never got the time to finish writing it.
+
 Requirements
 ------------
 
