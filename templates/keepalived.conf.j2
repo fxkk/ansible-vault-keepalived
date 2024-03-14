@@ -4,7 +4,7 @@ global_defs {
 }
 
 vrrp_script vault_active_node_script {
-  script       "/etc/keepalived/scripts/vault_active_node.py --timeout=1 --url='https://127.0.0.1:8200'"
+  script       "/etc/keepalived/scripts/vault_active_node.py --timeout=1 --url='{{ vault_keepalived_addr }}'"
   interval 2   # Run script every 2 seconds
   fall 1       # If script returns non-zero 2 times in succession, enter FAULT state
   rise 3       # If script returns zero r times in succession, exit FAULT state

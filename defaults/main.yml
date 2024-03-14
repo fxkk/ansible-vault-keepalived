@@ -3,9 +3,9 @@
 
 vault_keepalived_interface: ens192
 vault_keepalived_router_id: 25
-vault_keepalived_priority:  100
+vault_keepalived_priority: 100
 vault_keepalived_advert_int: 1
 vault_keepalived_auth_pass: "changeme"
 vault_keepalived_vip: 192.168.1.1
 vault_keepalived_group: "vault_keepalived"
-
+vault_keepalived_addr: "http://127.0.0.1:8200"
